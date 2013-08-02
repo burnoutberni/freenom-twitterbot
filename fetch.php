@@ -20,7 +20,7 @@ if (isset($result[0])) {
 		$item = null;
 		foreach($users as $struct) {
 		    if ($row->domainname == "FREENOM".$struct->domainname.".ML") {
-			$temp['text'] = "Omnomnomz, another ".$row->item." for me!!! http://".strtolower($row->domainname). " #ohm2013 #ppoe+";
+			$temp['text'] = "#Ohmnomnomz, another ".$row->item." for me!!! http://".strtolower($row->domainname). " #ohm2013 #ppoe+";
 			$temp['twitter_token'] = $struct->twitter_token;
 			$temp['twitter_token_secret'] = $struct->twitter_token_secret;
 			$tweets[] = $temp;
