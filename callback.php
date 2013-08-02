@@ -1,4 +1,8 @@
 <?php
+
+ini_set('display_errors',1);
+ini_set('display_startup_errors',1);
+error_reporting(-1);
 /**
  * @file
  * Take the user when they return from Twitter. Get access tokens.
@@ -14,7 +18,7 @@ require_once('functions.inc.php');
 /* If the oauth_token is old redirect to the connect page. */
 if (isset($_REQUEST['oauth_token']) && $_SESSION['oauth_token'] !== $_REQUEST['oauth_token']) {
   $_SESSION['oauth_status'] = 'oldtoken';
-  header('Location: ./clearsessions.php');
+  header('Location: ./logoutonly.php');
 }
 
 /* Create TwitteroAuth object with app key/secret and token key/secret from default phase */
@@ -22,6 +26,16 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $_SESSION['oauth_t
 
 /* Request access tokens from twitter */
 $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+
+if (isset($_SESSION['delete']) && $_SESSION['delete'] === 'true') {
+    unset($_SESSION['delete']);
+    
+    /* Save the access tokens. Normally these would be saved in a database for future use. */
+    $_SESSION['access_token'] = $access_token;
+    
+    header('Location: delete.php');
+    exit;
+}
 
 if (isUserRegistered($access_token)) {
     header('Location: index.php?error=userAlreadyRegistered');
@@ -31,35 +45,13 @@ if (isUserRegistered($access_token)) {
 /* Save the access tokens. Normally these would be saved in a database for future use. */
 $_SESSION['access_token'] = $access_token;
 
-$usersFile = file_get_contents('users.json');
-if ($usersFile === false) {
-    echo 'cannot read file.';
-    exit;
-}
-$users = json_decode($usersFile);
-$newUser = array(
-    'domainname' => $_SESSION['domainname'], 
-    'twitter_token' => $_SESSION['access_token']['oauth_token'], 
-    'twitter_token_secret' => $_SESSION['access_token']['oauth_token_secret']
-);
-$users[] = $newUser;
-$result = file_put_contents('users.json', json_encode($users));
-if ($result === false) {
-    echo 'cannot write file.';
-    exit;
-}
-
-
+addUser($_SESSION['domainname'], $_SESSION['access_token']['oauth_token'], $_SESSION['access_token']['oauth_token_secret']);
 
 /* Remove no longer needed request tokens */
 unset($_SESSION['oauth_token']);
 unset($_SESSION['oauth_token_secret']);
 
-/* If HTTP response is 200 continue otherwise send to connect page to retry */
-if (200 == $connection->http_code) {
-  /* The user has been verified and the access tokens can be saved for future use */
-  $_SESSION['status'] = 'verified';
-  header('Location: ./index.php');
-} else {
-  header('Location: ./index.php');
-}
+
+session_destroy();
+
+header('Location: ./index.php?info=registered');

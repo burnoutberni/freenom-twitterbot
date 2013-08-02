@@ -45,20 +45,21 @@ require_once('functions.inc.php');
         </div>
 
         <div class="col-lg-6">
-          <form action="redirect.php" method="post">
+          <form action="register.php" method="post">
             <h4>Register now!</h4>
 <?php
-
-/* If access tokens are not available redirect to connect page. */
-if (!isLoggedInTwitter()) {
-
-?>
-
-<?php 
     if (isset($_GET['error'])) {
-	if ($_GET['error'] === 'alreadyRegistered') echo '<div class="alert alert-danger">Your domain is already registered!</div>';
-	if ($_GET['error'] === 'userAlreadyRegistered') echo '<div class="alert alert-danger">Your Twitter account is already registered!</div>';
-	if ($_GET['error'] === 'domainnameNotInt') echo '<div class="alert alert-danger">You have to enter a valid number.</div>';
+	echo '<div class="alert alert-danger">';
+	if ($_GET['error'] === 'alreadyRegistered') echo 'Your domain is already registered!';
+	if ($_GET['error'] === 'userAlreadyRegistered') echo 'Your Twitter account is already registered!';
+	if ($_GET['error'] === 'domainnameNotInt') echo 'You have to enter a valid number.';
+	echo '</div>';
+    }
+    if (isset($_GET['info'])) {
+	echo '<div class="alert alert-success">';
+	if ($_GET['info'] === 'registered') echo 'You are now registered!';
+	if ($_GET['info'] === 'userRemoved') echo 'Your user is removed!';
+	echo '</div>';
     }
 ?>
             <p>Please insert your Melons & Meatloafs number:<br>
@@ -73,22 +74,7 @@ if (!isLoggedInTwitter()) {
               <input class="btn btn-primary" type="submit" value="Connect with Twitter" />
             </div>
           </form>
-
-<?php
-
-} else {
-
-?>
-
-	    <p>You are now registered!</p><br />
-	    <a href="logoutonly.php">Logout</a>
-
-<?php
-
-}
-
-?>
-          <form action="index.php" method="post">
+          <form action="delete.php" method="post">
             <h4>You don't want to use this service anymore?</h4>
             <h5>Just use this button, authenticate yourself, and it will stop.</h5>
             <input type="hidden" value="true" name="submit" />
