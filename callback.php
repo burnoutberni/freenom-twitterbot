@@ -27,6 +27,9 @@ $connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $_SESSION['oauth_t
 /* Request access tokens from twitter */
 $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
+$user_data = $connection->get('account/verify_credentials');
+$screen_name = $user_data->screen_name;
+
 if (isset($_SESSION['delete']) && $_SESSION['delete'] === 'true') {
     unset($_SESSION['delete']);
     
@@ -45,7 +48,7 @@ if (isUserRegistered($access_token)) {
 /* Save the access tokens. Normally these would be saved in a database for future use. */
 $_SESSION['access_token'] = $access_token;
 
-addUser($_SESSION['domainname'], $_SESSION['access_token']['oauth_token'], $_SESSION['access_token']['oauth_token_secret']);
+addUser($_SESSION['domainname'], $_SESSION['access_token']['oauth_token'], $_SESSION['access_token']['oauth_token_secret'], $screen_name);
 
 /* Remove no longer needed request tokens */
 unset($_SESSION['oauth_token']);

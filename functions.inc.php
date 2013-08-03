@@ -67,7 +67,7 @@ function removeUser() {
     }
 }
 
-function addUser($domainname, $oauth_token, $oauth_token_secret) {
+function addUser($domainname, $oauth_token, $oauth_token_secret, $screen_name) {
     $usersFile = file_get_contents(USERS_FILE);
     if ($usersFile === false) {
 	echo 'cannot read file.';
@@ -77,7 +77,8 @@ function addUser($domainname, $oauth_token, $oauth_token_secret) {
     $newUser = array(
 	'domainname' => $domainname, 
 	'twitter_token' => $oauth_token, 
-	'twitter_token_secret' => $oauth_token_secret
+	'twitter_token_secret' => $oauth_token_secret,
+	'screen_name' => $screen_name
     );
     $users[] = $newUser;
     $result = file_put_contents(USERS_FILE, json_encode($users));
