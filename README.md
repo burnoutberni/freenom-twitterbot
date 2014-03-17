@@ -9,7 +9,7 @@ How to install
 * Create new application at http://dev.twitter.com
 * Change config.php
 * Important! Take care that the users.json and the tweets.log files are in a folder accessible by PHP, but still secure, as they both contain user data to a certain degree.
-* Create a cronjob for fetch.php (we recommend every minute)
+* Create a cronjob for fetch.php (we recommend every minute. In some server, they don’t allow to use cron jobs. In such a situation, you can use third party sites like EasyCron(http://www.easycron.com/) to run the cron.)
 * ???
 * Profit
 
